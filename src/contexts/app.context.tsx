@@ -54,6 +54,7 @@ const initialAppContext = {
   setItem: () => null
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AppContext = createContext<AppContextType>(initialAppContext)
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {

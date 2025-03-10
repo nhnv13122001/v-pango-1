@@ -38,7 +38,7 @@ interface FilterType {
   attribute: string
   operator: string
   values: Dayjs | Dayjs[] | boolean | number | string[] | undefined
-  between?: number[]
+  between?: Record<string, number>
 }
 
 const inputRenderMap = {
@@ -54,7 +54,7 @@ const inputRenderMap = {
       <Row gutter={8}>
         <Col span={12}>
           <Form.Item
-            name={[name, 'between', 'Value1']}
+            name={[name, 'between', 'doubleValue1']}
             style={{ marginBottom: 0 }}
           >
             <InputNumber
@@ -65,7 +65,7 @@ const inputRenderMap = {
         </Col>
         <Col span={12}>
           <Form.Item
-            name={[name, 'between', 'Value2']}
+            name={[name, 'between', 'doubleValue2']}
             style={{ marginBottom: 0 }}
           >
             <InputNumber placeholder='Max' style={{ width: '100%' }} />
@@ -81,7 +81,7 @@ const inputRenderMap = {
       <Row gutter={8}>
         <Col span={12}>
           <Form.Item
-            name={[name, 'between', 'Value1']}
+            name={[name, 'between', 'longValue1']}
             style={{ marginBottom: 0 }}
           >
             <InputNumber placeholder='Min' style={{ width: '100%' }} />
@@ -89,7 +89,7 @@ const inputRenderMap = {
         </Col>
         <Col span={12}>
           <Form.Item
-            name={[name, 'between', 'Value2']}
+            name={[name, 'between', 'longValue2']}
             style={{ marginBottom: 0 }}
           >
             <InputNumber placeholder='Max' style={{ width: '100%' }} />
@@ -209,22 +209,32 @@ const FilterBuilder = ({ open, onClose }: Props) => {
         )
         const { dataType } = selectedAttribute || {}
 
-        const fieldValue: Record<string, () => object | undefined> = {
+        const fieldValue: Record<
+          'String' | 'Boolean' | 'Long' | 'Double' | 'Timestamp',
+          () => Record<
+            string,
+            number | boolean | Dayjs | Dayjs[] | string[] | undefined
+          >
+        > = {
           String: () => ({ textValues: filter.values }),
           Boolean: () => ({ boolValue: filter.values || false }),
           Long: () =>
             filter.operator === 'between'
               ? {
-                  longValue1: filter.between?.[0],
-                  longValue2: filter.between?.[1]
+                  longValue1: filter.between?.longValue1,
+                  longValue2: filter.between?.longValue2
                 }
+              : filter.operator === 'exist'
+              ? { boolValue: filter.values }
               : { longValue1: filter.values },
           Double: () =>
             filter.operator === 'between'
               ? {
-                  doubleValue1: filter.between?.[0],
-                  doubleValue2: filter.between?.[1]
+                  doubleValue1: filter.between?.doubleValue1,
+                  doubleValue2: filter.between?.doubleValue2
                 }
+              : filter.operator === 'exist'
+              ? { boolValue: filter.values }
               : { doubleValue1: filter.values },
           Timestamp: () =>
             filter.operator === 'between'
@@ -232,6 +242,8 @@ const FilterBuilder = ({ open, onClose }: Props) => {
                   longValue1: (filter.values as Dayjs[])[0]?.valueOf(),
                   longValue2: (filter.values as Dayjs[])[1]?.valueOf()
                 }
+              : filter.operator === 'exist'
+              ? { boolValue: filter.values }
               : { longValue1: (filter.values as Dayjs)?.valueOf() }
         }[dataType as keyof typeof fieldValue]?.()
 
@@ -269,7 +281,6 @@ const FilterBuilder = ({ open, onClose }: Props) => {
               {fields.map(({ key, name, ...restField }, index) => {
                 const selectedAttribute = fieldValues?.[name]?.attribute
                 const selectedOperator = fieldValues?.[name]?.operator
-                const selectedValues = fieldValues?.[name]?.values
 
                 const selectedAttributeType = attributes?.find(
                   (attribute: AttributeType) =>

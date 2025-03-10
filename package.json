@@ -1,4 +1,5 @@
 {
+  "homepage": "https://nhnv13122001.github.io/v-pango-1",
   "name": "test",
   "private": true,
   "version": "0.0.0",
@@ -7,7 +8,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "antd": "^5.24.2",

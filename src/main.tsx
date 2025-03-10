@@ -8,11 +8,11 @@ import App from './App.tsx'
 import { AppProvider } from './contexts/app.context.tsx'
 
 createRoot(document.getElementById('root')!).render(
-  // <StrictMode>
-  <AppProvider>
-    <ConfigProvider>
-      <App />
-    </ConfigProvider>
-  </AppProvider>
-  // </StrictMode>
+  <StrictMode>
+    <AppProvider>
+      <ConfigProvider>
+        <App />
+      </ConfigProvider>
+    </AppProvider>
+  </StrictMode>
 )

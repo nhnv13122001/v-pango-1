@@ -49,7 +49,12 @@ interface AppContextType {
   setItem: (item: DataModelType | null) => void
 }
 
-export const AppContext = createContext<AppContextType>()
+const initialAppContext = {
+  item: null,
+  setItem: () => null
+}
+
+export const AppContext = createContext<AppContextType>(initialAppContext)
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [item, setItem] = useState<DataModelType | null>(null)

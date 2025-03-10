@@ -155,24 +155,19 @@ const getInputComponent = (type?: string, operator?: string, name?: number) => {
   if (type in inputRenderMap) {
     const typeConfig = inputRenderMap[type as keyof typeof inputRenderMap]
 
-    if (operator in typeConfig) {
+    // Ensure that typeConfig is of the correct type before accessing operators
+    if ('default' in typeConfig && operator in typeConfig) {
       if (operator === 'between' || operator === 'relativeTime') {
-        return (
-          typeConfig[
-            operator as keyof typeof typeConfig
-          ] as () => React.ReactNode
-        )(name)
+        return (typeConfig[operator] as (name: number) => React.ReactNode)(name)
       }
-      return (
-        typeConfig[operator as keyof typeof typeConfig] as () => React.ReactNode
-      )()
+      return (typeConfig[operator] as () => React.ReactNode)()
     }
 
-    // Nếu không có operator cụ thể, dùng default
     if ('default' in typeConfig) {
       return typeConfig.default()
     }
   }
+  return inputRenderMap.default()
 }
 
 const FilterBuilder = ({ open, onClose }: Props) => {
@@ -209,13 +204,7 @@ const FilterBuilder = ({ open, onClose }: Props) => {
         )
         const { dataType } = selectedAttribute || {}
 
-        const fieldValue: Record<
-          'String' | 'Boolean' | 'Long' | 'Double' | 'Timestamp',
-          () => Record<
-            string,
-            number | boolean | Dayjs | Dayjs[] | string[] | undefined
-          >
-        > = {
+        const fieldValue = {
           String: () => ({ textValues: filter.values }),
           Boolean: () => ({ boolValue: filter.values || false }),
           Long: () =>

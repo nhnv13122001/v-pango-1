@@ -3,17 +3,18 @@ import { Col, Row, Form, Flex, Button, Drawer, Select } from 'antd'
 import { CloseOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { RenderInput } from './InputRenderers'
+import { AppContext } from '../../contexts/app.context'
 import { AttributeType, FormFilterType } from '../../types/type'
 import {
+  TYPES,
   OPERATORS,
-  operators as operatorsData,
-  TYPES
+  operators as operatorsData
 } from '../../constants/data'
-import { AppContext, DataModelType } from '../../contexts/app.context'
 import {
   objectToString,
   stringToObject,
-  mapFormToResponse
+  mapFormToResponse,
+  mapResponseToForm
 } from '../../utils/utils'
 
 const { Option } = Select
@@ -48,7 +49,7 @@ const renderInput = (type?: string, operator?: string, name?: number) => {
 
 const FilterBuilder = ({ open, onClose }: Props) => {
   const [form] = Form.useForm()
-  const { item } = useContext(AppContext)
+  const { item, filters, setFilters } = useContext(AppContext)
   const [attributes, setAttributes] = useState<AttributeType[] | null>(null)
   const [hasFilters, setHasFilters] = useState<boolean>(false)
   const fieldValues = Form.useWatch('filters', form) || []
@@ -62,8 +63,16 @@ const FilterBuilder = ({ open, onClose }: Props) => {
   )
 
   useEffect(() => {
-    setAttributes((item as DataModelType)?.attributes)
-  }, [item])
+    if (item) {
+      setAttributes(item.attributes)
+
+      const savedFilters = filters[item.id] || []
+      if (savedFilters.length > 0) {
+        form.setFieldsValue({ filters: mapResponseToForm(savedFilters) })
+        setHasFilters(true)
+      }
+    }
+  }, [item, filters, form])
 
   const handleClose = () => {
     onClose()
@@ -74,7 +83,6 @@ const FilterBuilder = ({ open, onClose }: Props) => {
   const onFinish = (values: { filters: FormFilterType[] }) => {
     const moreFilters = mapFormToResponse(values.filters)
     console.log({ moreFilters, page: 1 })
-    moreFilters.map((filter) => console.log(filter))
   }
 
   return (
@@ -86,6 +94,34 @@ const FilterBuilder = ({ open, onClose }: Props) => {
         <Flex align='center' justify='space-between'>
           FILTER BUILDER
           <Button type='text' icon={<CloseOutlined />} onClick={handleClose} />
+        </Flex>
+      }
+      footer={
+        <Flex align='center' justify='end' gap={8}>
+          <Button
+            onClick={() => {
+              form.resetFields()
+              setHasFilters(false)
+              onClose()
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type='primary'
+            onClick={async () => {
+              try {
+                const values = await form.validateFields()
+                const moreFilters = mapFormToResponse(values.filters || [])
+                if (!item) return
+                setFilters(item.id, moreFilters)
+              } catch (error) {
+                console.error('Validation failed:', error)
+              }
+            }}
+          >
+            Save Filters
+          </Button>
         </Flex>
       }
     >

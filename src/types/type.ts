@@ -29,7 +29,7 @@ export interface ResponseFilterType {
 export interface FormFilterType {
   attribute: string
   operator: string
-  values?: string[] | boolean | undefined | Dayjs | Dayjs[]
+  values?: string[] | boolean | undefined | Dayjs | Dayjs[] | number
   between?: {
     longValue1?: number
     longValue2?: number

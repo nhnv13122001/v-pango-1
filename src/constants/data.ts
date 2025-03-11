@@ -807,25 +807,3 @@ export const operators: Record<string, { value: string; label: string }[]> = {
     { value: OPERATORS.EXIST, label: 'Exist' }
   ]
 }
-
-export const response = {
-  moreFilters: [
-    {
-      attribute: 'customField01',
-      index: 1,
-      operator: 'equals',
-      textValues: ['12312'],
-      valueType: 'String',
-      metaAttr: {
-        key: 'customField01',
-        sysIndexKey: 'customField01',
-        name: 'Field 01',
-        dataType: 'String',
-        refType: null,
-        ctxMasterDataRef: null
-      },
-      display: 'Field 01'
-    }
-  ],
-  pageSize: 1
-}

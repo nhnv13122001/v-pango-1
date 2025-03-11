@@ -15,7 +15,7 @@ export const dayjsToNumber = (dayjs: Dayjs): number => {
   return dayjs.valueOf()
 }
 
-export const numberToDayjs = (number: string): Dayjs => {
+export const numberToDayjs = (number: number): Dayjs => {
   return dayjs(number)
 }
 
@@ -84,5 +84,75 @@ export const mapFormToResponse = (
       display: selectedAttribute?.name,
       ...fieldValue
     }
+  })
+}
+
+export const mapResponseToForm = (
+  responseConditions: ResponseFilterType[]
+): FormFilterType[] => {
+  if (!responseConditions || !responseConditions.length) {
+    return []
+  }
+
+  return responseConditions.map((condition) => {
+    const formCondition: FormFilterType = {
+      attribute: objectToString(condition.metaAttr),
+      operator: condition.operator
+    }
+
+    switch (condition.valueType) {
+      case TYPES.STRING:
+        formCondition.values = condition.textValues || []
+        break
+
+      case TYPES.DOUBLE:
+        if (condition.operator === OPERATORS.BETWEEN) {
+          formCondition.between.doubleValue1 = condition.doubleValue1
+          formCondition.between.doubleValue2 = condition.doubleValue2
+        } else if (condition.operator === OPERATORS.EXIST) {
+          formCondition.boolValue = condition.boolValue
+        } else {
+          formCondition.values = condition.doubleValue1
+        }
+        break
+
+      case TYPES.LONG:
+        if (condition.operator === OPERATORS.BETWEEN) {
+          formCondition.between.longValue1 = condition.longValue1
+          formCondition.between.longValue2 = condition.longValue2
+        } else if (condition.operator === OPERATORS.EXIST) {
+          formCondition.boolValue = condition.boolValue
+        } else {
+          formCondition.values = condition.longValue1
+        }
+        break
+
+      case TYPES.BOOLEAN:
+        formCondition.boolValue = condition.boolValue
+        break
+
+      case TYPES.TIMESTAMP:
+        if (condition.operator === OPERATORS.BETWEEN) {
+          formCondition.values = [
+            numberToDayjs(condition.longValue1),
+            numberToDayjs(condition.longValue2)
+          ]
+        } else if (condition.operator === OPERATORS.RELATIVE_TIME) {
+          formCondition.relativeTime.longValue1 = numberToDayjs(
+            condition.longValue1
+          )
+          formCondition.relativeTime.longValue2 = numberToDayjs(
+            condition.longValue2
+          )
+          formCondition.relativeTime.timeType = condition.timeType
+        } else if (condition.operator === OPERATORS.EXIST) {
+          formCondition.boolValue = condition.boolValue
+        } else {
+          formCondition.values = numberToDayjs(condition.longValue1)
+        }
+        break
+    }
+
+    return formCondition
   })
 }

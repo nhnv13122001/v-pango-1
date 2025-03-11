@@ -1,13 +1,6 @@
 import { createContext, useState, ReactNode } from 'react'
 
-interface AttributeType {
-  key: string
-  sysIndexKey: string
-  name: string
-  dataType: string
-  refType: null
-  ctxMasterDataRef: null
-}
+import { AttributeType } from '../types/type'
 
 export interface DataModelType {
   id: string

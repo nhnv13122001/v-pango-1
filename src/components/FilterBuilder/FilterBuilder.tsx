@@ -1,173 +1,49 @@
-import { Dayjs } from 'dayjs'
 import { useContext, useEffect, useState } from 'react'
+import { Col, Row, Form, Flex, Button, Drawer, Select } from 'antd'
 import { CloseOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
-import {
-  Col,
-  Row,
-  Form,
-  Flex,
-  Button,
-  Drawer,
-  Select,
-  Switch,
-  DatePicker,
-  InputNumber
-} from 'antd'
 
-import { operators as operatorsData } from '../../constants/data'
+import { RenderInput } from './InputRenderers'
+import { AttributeType, FormFilterType } from '../../types/type'
+import {
+  OPERATORS,
+  operators as operatorsData,
+  TYPES
+} from '../../constants/data'
 import { AppContext, DataModelType } from '../../contexts/app.context'
+import {
+  objectToString,
+  stringToObject,
+  mapFormToResponse
+} from '../../utils/utils'
 
 const { Option } = Select
-const { RangePicker } = DatePicker
 
 interface Props {
   open: boolean
   onClose: () => void
 }
 
-interface AttributeType {
-  key: string
-  sysIndexKey: string
-  name: string
-  dataType: string
-  refType: null
-  ctxMasterDataRef: null
-}
-
-interface FilterType {
-  attribute: string
-  operator: string
-  values: Dayjs | Dayjs[] | boolean | number | string[] | undefined
-  between?: Record<string, number>
-}
-
-const inputRenderMap = {
-  String: {
-    default: () => (
-      <Select mode='tags' placeholder='Enter' style={{ width: '100%' }} />
-    ),
-    exist: () => <Switch />
-  },
-  Double: {
-    default: () => <InputNumber style={{ width: '100%' }} />,
-    between: (name: number) => (
-      <Row gutter={8}>
-        <Col span={12}>
-          <Form.Item
-            name={[name, 'between', 'doubleValue1']}
-            style={{ marginBottom: 0 }}
-          >
-            <InputNumber
-              placeholder='Min'
-              style={{ width: '100%', marginBottom: 0 }}
-            />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
-          <Form.Item
-            name={[name, 'between', 'doubleValue2']}
-            style={{ marginBottom: 0 }}
-          >
-            <InputNumber placeholder='Max' style={{ width: '100%' }} />
-          </Form.Item>
-        </Col>
-      </Row>
-    ),
-    exist: () => <Switch />
-  },
-  Long: {
-    default: () => <InputNumber style={{ width: '100%' }} />,
-    between: (name: number) => (
-      <Row gutter={8}>
-        <Col span={12}>
-          <Form.Item
-            name={[name, 'between', 'longValue1']}
-            style={{ marginBottom: 0 }}
-          >
-            <InputNumber placeholder='Min' style={{ width: '100%' }} />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
-          <Form.Item
-            name={[name, 'between', 'longValue2']}
-            style={{ marginBottom: 0 }}
-          >
-            <InputNumber placeholder='Max' style={{ width: '100%' }} />
-          </Form.Item>
-        </Col>
-      </Row>
-    ),
-    exist: () => <Switch />
-  },
-  Boolean: {
-    default: () => <Switch />
-  },
-  Timestamp: {
-    default: () => <DatePicker showTime style={{ width: '100%' }} />,
-    between: () => <RangePicker showTime style={{ width: '100%' }} />,
-    relativeTime: (name: number) => (
-      <Row gutter={8}>
-        <Col span={8}>
-          <Form.Item
-            name={[name, 'relativeTime', 'longValue1']}
-            style={{ marginBottom: 0 }}
-          >
-            <InputNumber placeholder='Min' style={{ width: '100%' }} />
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item
-            name={[name, 'relativeTime', 'longValue2']}
-            style={{ marginBottom: 0 }}
-          >
-            <InputNumber placeholder='Max' style={{ width: '100%' }} />
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item
-            name={[name, 'relativeTime', 'timeType']}
-            style={{ marginBottom: 0 }}
-          >
-            <Select
-              options={[
-                { label: 'Day', value: 'Day' },
-                { label: 'Hour', value: 'Hour' },
-                { label: 'Month', value: 'Month' },
-                { label: 'Minute', value: 'Minute' }
-              ]}
-              placeholder='Max'
-              style={{ width: '100%' }}
-            />
-          </Form.Item>
-        </Col>
-      </Row>
-    ),
-    exist: () => <Switch />
-  },
-  default: () => <Select disabled />
-}
-
-const getInputComponent = (type?: string, operator?: string, name?: number) => {
+const renderInput = (type?: string, operator?: string, name?: number) => {
   if (!type || !operator) {
-    return inputRenderMap.default()
+    return RenderInput.default()
   }
 
-  if (type in inputRenderMap) {
-    const typeConfig = inputRenderMap[type as keyof typeof inputRenderMap]
+  if (type in RenderInput) {
+    const typeConfig = RenderInput[type]
 
-    // Ensure that typeConfig is of the correct type before accessing operators
-    if ('default' in typeConfig && operator in typeConfig) {
+    if (operator in typeConfig) {
       if (operator === 'between' || operator === 'relativeTime') {
-        return (typeConfig[operator] as (name: number) => React.ReactNode)(name)
+        return typeConfig[operator](name)
       }
-      return (typeConfig[operator] as () => React.ReactNode)()
+
+      return typeConfig[operator]()
     }
 
     if ('default' in typeConfig) {
       return typeConfig.default()
     }
   }
-  return inputRenderMap.default()
+  return RenderInput.default()
 }
 
 const FilterBuilder = ({ open, onClose }: Props) => {
@@ -177,12 +53,12 @@ const FilterBuilder = ({ open, onClose }: Props) => {
   const [hasFilters, setHasFilters] = useState<boolean>(false)
   const fieldValues = Form.useWatch('filters', form) || []
   const isCurrentFilled = fieldValues.every(
-    (filter: FilterType) =>
-      (filter?.attribute && filter?.operator) ||
-      (filter?.operator === 'exist' &&
-        (Array.isArray(filter?.values)
-          ? filter?.values.length > 0
-          : filter?.values))
+    (filter: FormFilterType) =>
+      filter?.attribute &&
+      filter?.operator &&
+      (Array.isArray(filter?.values)
+        ? filter?.values.length > 0
+        : filter?.values)
   )
 
   useEffect(() => {
@@ -195,60 +71,10 @@ const FilterBuilder = ({ open, onClose }: Props) => {
     setHasFilters(false)
   }
 
-  const handleSubmit = () => {
-    const values = form.getFieldsValue()
-    const moreFilters = values.filters?.map(
-      (filter: FilterType, index: number) => {
-        const selectedAttribute = attributes?.find(
-          (attr) => attr.key === filter.attribute
-        )
-        const { dataType } = selectedAttribute || {}
-
-        const fieldValue = {
-          String: () => ({ textValues: filter.values }),
-          Boolean: () => ({ boolValue: filter.values || false }),
-          Long: () =>
-            filter.operator === 'between'
-              ? {
-                  longValue1: filter.between?.longValue1,
-                  longValue2: filter.between?.longValue2
-                }
-              : filter.operator === 'exist'
-              ? { boolValue: filter.values }
-              : { longValue1: filter.values },
-          Double: () =>
-            filter.operator === 'between'
-              ? {
-                  doubleValue1: filter.between?.doubleValue1,
-                  doubleValue2: filter.between?.doubleValue2
-                }
-              : filter.operator === 'exist'
-              ? { boolValue: filter.values }
-              : { doubleValue1: filter.values },
-          Timestamp: () =>
-            filter.operator === 'between'
-              ? {
-                  longValue1: (filter.values as Dayjs[])[0]?.valueOf(),
-                  longValue2: (filter.values as Dayjs[])[1]?.valueOf()
-                }
-              : filter.operator === 'exist'
-              ? { boolValue: filter.values }
-              : { longValue1: (filter.values as Dayjs)?.valueOf() }
-        }[dataType as keyof typeof fieldValue]?.()
-
-        return {
-          attribute: filter.attribute,
-          index: index + 1,
-          operator: filter.operator,
-          valueType: dataType,
-          metaAttr: selectedAttribute,
-          display: selectedAttribute?.name,
-          ...fieldValue
-        }
-      }
-    )
-
-    console.log({ moreFilters, pageSize: 1 })
+  const onFinish = (values: { filters: FormFilterType[] }) => {
+    const moreFilters = mapFormToResponse(values.filters)
+    console.log({ moreFilters, page: 1 })
+    moreFilters.map((filter) => console.log(filter))
   }
 
   return (
@@ -263,18 +89,22 @@ const FilterBuilder = ({ open, onClose }: Props) => {
         </Flex>
       }
     >
-      <Form form={form} layout='vertical' style={{ height: '100%' }}>
+      <Form
+        form={form}
+        layout='vertical'
+        onFinish={onFinish}
+        style={{ height: '100%' }}
+      >
         <Form.List name='filters'>
           {(fields, { add, remove }) => (
             <>
               {fields.map(({ key, name, ...restField }, index) => {
                 const selectedAttribute = fieldValues?.[name]?.attribute
+                  ? stringToObject(fieldValues?.[name]?.attribute)
+                  : ''
                 const selectedOperator = fieldValues?.[name]?.operator
 
-                const selectedAttributeType = attributes?.find(
-                  (attribute: AttributeType) =>
-                    attribute.key === selectedAttribute
-                )?.dataType
+                const selectedAttributeType = selectedAttribute?.dataType
                 const operators = selectedAttributeType
                   ? operatorsData[selectedAttributeType]
                   : []
@@ -306,7 +136,10 @@ const FilterBuilder = ({ open, onClose }: Props) => {
                         >
                           {attributes &&
                             attributes?.map((attribute) => (
-                              <Option key={attribute.key} value={attribute.key}>
+                              <Option
+                                key={attribute.key}
+                                value={objectToString(attribute)}
+                              >
                                 {`${attribute.name} - ${attribute.dataType}`}
                               </Option>
                             ))}
@@ -347,9 +180,16 @@ const FilterBuilder = ({ open, onClose }: Props) => {
                       <Form.Item
                         {...restField}
                         name={[name, 'values']}
-                        rules={[{ required: true, message: '' }]}
+                        rules={[
+                          {
+                            required:
+                              selectedOperator !== OPERATORS.EXIST &&
+                              selectedAttributeType !== TYPES.BOOLEAN,
+                            message: ''
+                          }
+                        ]}
                       >
-                        {getInputComponent(
+                        {renderInput(
                           selectedAttributeType,
                           selectedOperator,
                           name
@@ -377,7 +217,11 @@ const FilterBuilder = ({ open, onClose }: Props) => {
                           <Button
                             type='text'
                             icon={<PlusOutlined />}
-                            disabled={!isCurrentFilled}
+                            disabled={
+                              !isCurrentFilled &&
+                              selectedAttributeType !== TYPES.BOOLEAN &&
+                              selectedOperator !== OPERATORS.EXIST
+                            }
                             onClick={add}
                           />
                         )}
@@ -403,11 +247,7 @@ const FilterBuilder = ({ open, onClose }: Props) => {
           )}
         </Form.List>
         {hasFilters && (
-          <Button
-            type='primary'
-            onClick={handleSubmit}
-            disabled={!isCurrentFilled}
-          >
+          <Button type='primary' htmlType='submit'>
             Estimate data size
           </Button>
         )}

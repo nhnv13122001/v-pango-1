@@ -1,3 +1,27 @@
+export const TYPES = {
+  STRING: 'String',
+  DOUBLE: 'Double',
+  LONG: 'Long',
+  BOOLEAN: 'Boolean',
+  TIMESTAMP: 'Timestamp'
+}
+
+export const OPERATORS = {
+  EQUALS: 'equals',
+  NOT_EQUALS: 'notEquals',
+  LIKES: 'likes',
+  NOT_LIKES: 'notLikes',
+  CONTAIN_ALL: 'containAll',
+  EXIST: 'exist',
+  WILDCARD: 'wildcard',
+  GT: 'gt',
+  GTE: 'gte',
+  LT: 'lt',
+  LTE: 'lte',
+  BETWEEN: 'between',
+  RELATIVE_TIME: 'relativeTime'
+}
+
 export const dataModel = [
   {
     id: 'Email_Interaction',
@@ -739,48 +763,48 @@ export const dataModel = [
 ]
 
 export const operators: Record<string, { value: string; label: string }[]> = {
-  String: [
-    { value: 'equals', label: 'Equals' },
-    { value: 'notEquals', label: 'Not Equals' },
-    { value: 'likes', label: 'Likes' },
-    { value: 'notLikes', label: 'Not Likes' },
-    { value: 'containAll', label: 'Contains All' },
-    { value: 'exist', label: 'Exist' },
-    { value: 'wildcard', label: 'Wildcard' }
+  [TYPES.STRING]: [
+    { value: OPERATORS.EQUALS, label: 'Equals' },
+    { value: OPERATORS.NOT_EQUALS, label: 'Not Equals' },
+    { value: OPERATORS.LIKES, label: 'Likes' },
+    { value: OPERATORS.NOT_LIKES, label: 'Not Likes' },
+    { value: OPERATORS.CONTAIN_ALL, label: 'Contains All' },
+    { value: OPERATORS.EXIST, label: 'Exist' },
+    { value: OPERATORS.WILDCARD, label: 'Wildcard' }
   ],
-  Double: [
-    { value: 'notEquals', label: 'Not Equals' },
-    { value: 'equals', label: 'Equals' },
-    { value: 'gt', label: 'Greater than' },
-    { value: 'gte', label: 'Greater than Equal' },
-    { value: 'lt', label: 'Less than' },
-    { value: 'lte', label: 'Less than Equal' },
-    { value: 'between', label: 'Between' },
-    { value: 'exist', label: 'Exist' }
+  [TYPES.DOUBLE]: [
+    { value: OPERATORS.NOT_EQUALS, label: 'Not Equals' },
+    { value: OPERATORS.EQUALS, label: 'Equals' },
+    { value: OPERATORS.GT, label: 'Greater than' },
+    { value: OPERATORS.GTE, label: 'Greater than Equal' },
+    { value: OPERATORS.LT, label: 'Less than' },
+    { value: OPERATORS.LTE, label: 'Less than Equal' },
+    { value: OPERATORS.BETWEEN, label: 'Between' },
+    { value: OPERATORS.EXIST, label: 'Exist' }
   ],
-  Long: [
-    { value: 'notEquals', label: 'Not Equals' },
-    { value: 'equals', label: 'Equals' },
-    { value: 'gt', label: 'Greater than' },
-    { value: 'gte', label: 'Greater than Equal' },
-    { value: 'lt', label: 'Less than' },
-    { value: 'lte', label: 'Less than Equal' },
-    { value: 'between', label: 'Between' },
-    { value: 'exist', label: 'Exist' }
+  [TYPES.LONG]: [
+    { value: OPERATORS.NOT_EQUALS, label: 'Not Equals' },
+    { value: OPERATORS.EQUALS, label: 'Equals' },
+    { value: OPERATORS.GT, label: 'Greater than' },
+    { value: OPERATORS.GTE, label: 'Greater than Equal' },
+    { value: OPERATORS.LT, label: 'Less than' },
+    { value: OPERATORS.LTE, label: 'Less than Equal' },
+    { value: OPERATORS.BETWEEN, label: 'Between' },
+    { value: OPERATORS.EXIST, label: 'Exist' }
   ],
-  Boolean: [
-    { value: 'equals', label: 'Equals' },
-    { value: 'notEquals', label: 'Not Equals' },
-    { value: 'exist', label: 'Exist' }
+  [TYPES.BOOLEAN]: [
+    { value: OPERATORS.EQUALS, label: 'Equals' },
+    { value: OPERATORS.NOT_EQUALS, label: 'Not Equals' },
+    { value: OPERATORS.EXIST, label: 'Exist' }
   ],
-  Timestamp: [
-    { value: 'equals', label: 'Equals' },
-    { value: 'notEquals', label: 'Not Equals' },
-    { value: 'between', label: 'Between' },
-    { value: 'gte', label: 'Greater than Equal' },
-    { value: 'lte', label: 'Less than Equal' },
-    { value: 'relativeTime', label: 'Relative Time' },
-    { value: 'exist', label: 'Exist' }
+  [TYPES.TIMESTAMP]: [
+    { value: OPERATORS.EQUALS, label: 'Equals' },
+    { value: OPERATORS.NOT_EQUALS, label: 'Not Equals' },
+    { value: OPERATORS.BETWEEN, label: 'Between' },
+    { value: OPERATORS.GTE, label: 'Greater than Equal' },
+    { value: OPERATORS.LTE, label: 'Less than Equal' },
+    { value: OPERATORS.RELATIVE_TIME, label: 'Relative Time' },
+    { value: OPERATORS.EXIST, label: 'Exist' }
   ]
 }
 

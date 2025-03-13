@@ -1,15 +1,6 @@
 import { useContext, useState } from 'react'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
-import {
-  Flex,
-  Form,
-  Select,
-  Button,
-  Tag,
-  Typography,
-  Space,
-  Divider
-} from 'antd'
+import { Flex, Form, Select, Button, Tag, Typography, Divider } from 'antd'
 
 import { dataModel } from './constants/data'
 import FilterBuilder from './components/FilterBuilder'
@@ -20,7 +11,7 @@ import {
   stringToObject
 } from './utils/utils'
 import { AppContext } from './contexts/app.context'
-import { FormFilterType, ResponseFilterType } from './types/type'
+import { FormFilterType } from './types/type'
 
 const { Option } = Select
 const { Text } = Typography

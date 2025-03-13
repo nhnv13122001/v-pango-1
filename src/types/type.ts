@@ -29,17 +29,11 @@ export interface ResponseFilterType {
 export interface FormFilterType {
   attribute: string
   operator: string
-  values?: string[] | boolean | undefined | Dayjs | Dayjs[] | number
-  between?: {
-    longValue1?: number
-    longValue2?: number
-    doubleValue1?: number
-    doubleValue2?: number
-  }
-  relativeTime?: {
-    longValue1?: Dayjs
-    longValue2?: Dayjs
-    timeType?: string
-  }
-  boolValue?: boolean
+  values?:
+    | string[]
+    | number
+    | boolean
+    | Dayjs
+    | Dayjs[]
+    | Record<string, number | string | Dayjs>
 }

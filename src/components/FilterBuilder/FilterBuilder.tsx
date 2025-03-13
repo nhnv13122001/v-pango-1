@@ -5,17 +5,14 @@ import { CloseOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import { RenderInput } from './InputRenderers'
 import { AppContext } from '../../contexts/app.context'
 import { AttributeType, FormFilterType } from '../../types/type'
-import {
-  TYPES,
-  OPERATORS,
-  operators as operatorsData
-} from '../../constants/data'
+import { operators as operatorsData } from '../../constants/data'
 import {
   objectToString,
   stringToObject,
   mapFormToResponse,
   mapResponseToForm
 } from '../../utils/utils'
+import { StoreValue } from 'antd/es/form/interface'
 
 const { Option } = Select
 
@@ -24,7 +21,12 @@ interface Props {
   onClose: () => void
 }
 
-const renderInput = (type?: string, operator?: string, name?: number) => {
+const renderInput = (
+  type?: string,
+  operator?: string,
+  name?: number,
+  restField?: { fieldKey?: number }
+) => {
   if (!type || !operator) {
     return RenderInput.default()
   }
@@ -33,15 +35,11 @@ const renderInput = (type?: string, operator?: string, name?: number) => {
     const typeConfig = RenderInput[type]
 
     if (operator in typeConfig) {
-      if (operator === 'between' || operator === 'relativeTime') {
-        return typeConfig[operator](name)
-      }
-
-      return typeConfig[operator]()
+      return typeConfig[operator](name, restField)
     }
 
     if ('default' in typeConfig) {
-      return typeConfig.default()
+      return typeConfig.default(name, restField)
     }
   }
   return RenderInput.default()
@@ -53,14 +51,6 @@ const FilterBuilder = ({ open, onClose }: Props) => {
   const [attributes, setAttributes] = useState<AttributeType[] | null>(null)
   const [hasFilters, setHasFilters] = useState<boolean>(false)
   const fieldValues = Form.useWatch('filters', form) || []
-  const isCurrentFilled = fieldValues.every(
-    (filter: FormFilterType) =>
-      filter?.attribute &&
-      filter?.operator &&
-      (Array.isArray(filter?.values)
-        ? filter?.values.length > 0
-        : filter?.values)
-  )
 
   useEffect(() => {
     if (item) {
@@ -83,6 +73,22 @@ const FilterBuilder = ({ open, onClose }: Props) => {
   const onFinish = (values: { filters: FormFilterType[] }) => {
     const moreFilters = mapFormToResponse(values.filters)
     console.log({ moreFilters, page: 1 })
+  }
+
+  const onFinishFailed = (error) => {
+    console.error('Validation failed (Estimate data size):', error)
+  }
+
+  const handleAddRow = async (
+    add: (defaultValue?: StoreValue, insertIndex?: number) => void
+  ) => {
+    try {
+      const values = await form.validateFields()
+      if (!values) return
+      add()
+    } catch (error) {
+      console.error('Validation failed (Add row):', error)
+    }
   }
 
   return (
@@ -116,7 +122,7 @@ const FilterBuilder = ({ open, onClose }: Props) => {
                 if (!item) return
                 setFilters(item.id, moreFilters)
               } catch (error) {
-                console.error('Validation failed:', error)
+                console.error('Validation failed (Save filters):', error)
               }
             }}
           >
@@ -129,6 +135,7 @@ const FilterBuilder = ({ open, onClose }: Props) => {
         form={form}
         layout='vertical'
         onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
         style={{ height: '100%' }}
       >
         <Form.List name='filters'>
@@ -157,6 +164,7 @@ const FilterBuilder = ({ open, onClose }: Props) => {
                       >
                         <Select
                           allowClear
+                          showSearch
                           placeholder='Select'
                           onChange={() => {
                             form.setFieldsValue({
@@ -213,24 +221,12 @@ const FilterBuilder = ({ open, onClose }: Props) => {
                     </Col>
 
                     <Col span={9}>
-                      <Form.Item
-                        {...restField}
-                        name={[name, 'values']}
-                        rules={[
-                          {
-                            required:
-                              selectedOperator !== OPERATORS.EXIST &&
-                              selectedAttributeType !== TYPES.BOOLEAN,
-                            message: ''
-                          }
-                        ]}
-                      >
-                        {renderInput(
-                          selectedAttributeType,
-                          selectedOperator,
-                          name
-                        )}
-                      </Form.Item>
+                      {renderInput(
+                        selectedAttributeType,
+                        selectedOperator,
+                        name,
+                        restField
+                      )}
                     </Col>
 
                     <Col span={1}>
@@ -253,12 +249,7 @@ const FilterBuilder = ({ open, onClose }: Props) => {
                           <Button
                             type='text'
                             icon={<PlusOutlined />}
-                            disabled={
-                              !isCurrentFilled &&
-                              selectedAttributeType !== TYPES.BOOLEAN &&
-                              selectedOperator !== OPERATORS.EXIST
-                            }
-                            onClick={add}
+                            onClick={() => handleAddRow(add)}
                           />
                         )}
                       </Form.Item>

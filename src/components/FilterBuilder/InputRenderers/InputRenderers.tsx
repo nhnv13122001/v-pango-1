@@ -4,110 +4,206 @@ import { TYPES, OPERATORS } from '../../../constants/data'
 const { RangePicker } = DatePicker
 
 export const StringInput = {
-  default: () => (
-    <Select mode='tags' placeholder='Enter' style={{ width: '100%' }} />
+  default: (name: number, restField: { fieldKey?: number }) => (
+    <Form.Item
+      {...restField}
+      name={[name, 'values']}
+      rules={[{ required: true, message: '' }]}
+    >
+      <Select mode='tags' placeholder='Enter' style={{ width: '100%' }} />
+    </Form.Item>
   ),
-  [OPERATORS.EXIST]: () => <Switch />
+  [OPERATORS.EXIST]: (name: number, restField: { fieldKey?: number }) => (
+    <Form.Item
+      {...restField}
+      initialValue={false}
+      name={[name, 'values']}
+      rules={[{ required: true, message: '' }]}
+    >
+      <Switch />
+    </Form.Item>
+  )
 }
 
 export const DoubleInput = {
-  default: () => <InputNumber style={{ width: '100%' }} />,
-  [OPERATORS.BETWEEN]: (name: number) => (
-    <Row gutter={8}>
-      <Col span={12}>
-        <Form.Item
-          name={[name, 'between', 'doubleValue1']}
-          style={{ marginBottom: 0 }}
-        >
-          <InputNumber
-            placeholder='Min'
-            style={{ width: '100%', marginBottom: 0 }}
-          />
-        </Form.Item>
-      </Col>
-      <Col span={12}>
-        <Form.Item
-          name={[name, 'between', 'doubleValue2']}
-          style={{ marginBottom: 0 }}
-        >
-          <InputNumber placeholder='Max' style={{ width: '100%' }} />
-        </Form.Item>
-      </Col>
-    </Row>
+  default: (name: number, restField: { fieldKey?: number }) => (
+    <Form.Item
+      {...restField}
+      name={[name, 'values']}
+      rules={[{ required: true, message: '' }]}
+    >
+      <InputNumber style={{ width: '100%' }} />
+    </Form.Item>
   ),
-  [OPERATORS.EXIST]: () => <Switch />
+  [OPERATORS.BETWEEN]: (name: number, restField: { fieldKey?: number }) => (
+    <Form.Item {...restField}>
+      <Row gutter={8}>
+        <Col span={12}>
+          <Form.Item
+            style={{ marginBottom: 0 }}
+            name={[name, 'values', 'doubleValue1']}
+            rules={[{ required: true, message: '' }]}
+          >
+            <InputNumber placeholder='Min' style={{ width: '100%' }} />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            style={{ marginBottom: 0 }}
+            name={[name, 'values', 'doubleValue2']}
+            rules={[{ required: true, message: '' }]}
+          >
+            <InputNumber keyboard placeholder='Max' style={{ width: '100%' }} />
+          </Form.Item>
+        </Col>
+      </Row>
+    </Form.Item>
+  ),
+  [OPERATORS.EXIST]: (name: number, restField: { fieldKey?: number }) => (
+    <Form.Item
+      {...restField}
+      initialValue={false}
+      name={[name, 'values']}
+      rules={[{ required: true, message: '' }]}
+    >
+      <Switch />
+    </Form.Item>
+  )
 }
 
 export const LongInput = {
-  default: () => <InputNumber style={{ width: '100%' }} />,
-  [OPERATORS.BETWEEN]: (name: number) => (
-    <Row gutter={8}>
-      <Col span={12}>
-        <Form.Item
-          name={[name, 'between', 'longValue1']}
-          style={{ marginBottom: 0 }}
-        >
-          <InputNumber placeholder='Min' style={{ width: '100%' }} />
-        </Form.Item>
-      </Col>
-      <Col span={12}>
-        <Form.Item
-          name={[name, 'between', 'longValue2']}
-          style={{ marginBottom: 0 }}
-        >
-          <InputNumber placeholder='Max' style={{ width: '100%' }} />
-        </Form.Item>
-      </Col>
-    </Row>
+  default: (name: number, restField: { fieldKey?: number }) => (
+    <Form.Item
+      {...restField}
+      name={[name, 'values']}
+      rules={[{ required: true, message: '' }]}
+    >
+      <InputNumber style={{ width: '100%' }} />
+    </Form.Item>
   ),
-  [OPERATORS.EXIST]: () => <Switch />
+  [OPERATORS.BETWEEN]: (name: number, restField: { fieldKey?: number }) => (
+    <Form.Item {...restField}>
+      <Row gutter={8}>
+        <Col span={12}>
+          <Form.Item
+            style={{ marginBottom: 0 }}
+            name={[name, 'values', 'longValue1']}
+            rules={[{ required: true, message: '' }]}
+          >
+            <InputNumber placeholder='Min' style={{ width: '100%' }} />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            style={{ marginBottom: 0 }}
+            name={[name, 'values', 'longValue2']}
+            rules={[{ required: true, message: '' }]}
+          >
+            <InputNumber placeholder='Max' style={{ width: '100%' }} />
+          </Form.Item>
+        </Col>
+      </Row>
+    </Form.Item>
+  ),
+  [OPERATORS.EXIST]: (name: number, restField: { fieldKey?: number }) => (
+    <Form.Item
+      {...restField}
+      initialValue={false}
+      name={[name, 'values']}
+      rules={[{ required: true, message: '' }]}
+    >
+      <Switch />
+    </Form.Item>
+  )
 }
 
 export const BooleanInput = {
-  default: () => <Switch />
+  default: (name: number, restField: { fieldKey?: number }) => (
+    <Form.Item
+      {...restField}
+      initialValue={false}
+      name={[name, 'values']}
+      rules={[{ required: true, message: '' }]}
+    >
+      <Switch />
+    </Form.Item>
+  )
 }
 
 export const TimestampInput = {
-  default: () => <DatePicker showTime style={{ width: '100%' }} />,
-  [OPERATORS.BETWEEN]: () => <RangePicker showTime style={{ width: '100%' }} />,
-  [OPERATORS.RELATIVE_TIME]: (name: number) => (
-    <Row gutter={8}>
-      <Col span={8}>
-        <Form.Item
-          name={[name, 'relativeTime', 'longValue1']}
-          style={{ marginBottom: 0 }}
-        >
-          <InputNumber placeholder='Value' style={{ width: '100%' }} />
-        </Form.Item>
-      </Col>
-      <Col span={8}>
-        <Form.Item
-          name={[name, 'relativeTime', 'longValue2']}
-          style={{ marginBottom: 0 }}
-        >
-          <InputNumber placeholder='Max' style={{ width: '100%' }} />
-        </Form.Item>
-      </Col>
-      <Col span={8}>
-        <Form.Item
-          name={[name, 'relativeTime', 'timeType']}
-          style={{ marginBottom: 0 }}
-        >
-          <Select
-            options={[
-              { label: 'Day', value: 'Day' },
-              { label: 'Hour', value: 'Hour' },
-              { label: 'Month', value: 'Month' },
-              { label: 'Minute', value: 'Minute' }
-            ]}
-            placeholder='Unit'
-            style={{ width: '100%' }}
-          />
-        </Form.Item>
-      </Col>
-    </Row>
+  default: (name: number, restField: { fieldKey?: number }) => (
+    <Form.Item
+      {...restField}
+      name={[name, 'values']}
+      rules={[{ required: true, message: '' }]}
+    >
+      <DatePicker showTime style={{ width: '100%' }} />
+    </Form.Item>
   ),
-  [OPERATORS.EXIST]: () => <Switch />
+  [OPERATORS.BETWEEN]: (name: number, restField: { fieldKey?: number }) => (
+    <Form.Item
+      {...restField}
+      name={[name, 'values']}
+      rules={[{ required: true, message: '' }]}
+    >
+      <RangePicker showTime style={{ width: '100%' }} />
+    </Form.Item>
+  ),
+  [OPERATORS.RELATIVE_TIME]: (
+    name: number,
+    restField: { fieldKey?: number }
+  ) => (
+    <Form.Item {...restField}>
+      <Row gutter={8}>
+        <Col span={8}>
+          <Form.Item
+            style={{ marginBottom: 0 }}
+            name={[name, 'values', 'longValue1']}
+            rules={[{ required: true, message: '' }]}
+          >
+            <InputNumber placeholder='Value' style={{ width: '100%' }} />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item
+            style={{ marginBottom: 0 }}
+            name={[name, 'values', 'longValue2']}
+            rules={[{ required: true, message: '' }]}
+          >
+            <InputNumber placeholder='Max' style={{ width: '100%' }} />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item
+            style={{ marginBottom: 0 }}
+            name={[name, 'values', 'timeType']}
+            rules={[{ required: true, message: '' }]}
+          >
+            <Select
+              options={[
+                { label: 'Day', value: 'Day' },
+                { label: 'Hour', value: 'Hour' },
+                { label: 'Month', value: 'Month' },
+                { label: 'Minute', value: 'Minute' }
+              ]}
+              placeholder='Unit'
+              style={{ width: '100%' }}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+    </Form.Item>
+  ),
+  [OPERATORS.EXIST]: (name: number, restField: { fieldKey?: number }) => (
+    <Form.Item
+      {...restField}
+      initialValue={false}
+      name={[name, 'values']}
+      rules={[{ required: true, message: '' }]}
+    >
+      <Switch />
+    </Form.Item>
+  )
 }
 
 export const RenderInput = {
@@ -116,5 +212,9 @@ export const RenderInput = {
   [TYPES.LONG]: LongInput,
   [TYPES.BOOLEAN]: BooleanInput,
   [TYPES.TIMESTAMP]: TimestampInput,
-  default: () => <Select disabled />
+  default: () => (
+    <Form.Item>
+      <Select disabled placeholder='Enter' />
+    </Form.Item>
+  )
 }

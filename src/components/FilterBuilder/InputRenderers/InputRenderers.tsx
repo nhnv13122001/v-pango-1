@@ -13,7 +13,7 @@ export const StringInput = {
       <Select mode='tags' placeholder='Enter' style={{ width: '100%' }} />
     </Form.Item>
   ),
-  [OPERATORS.EXIST]: (name: number, restField: { fieldKey?: number }) => (
+  [OPERATORS.EXIST.value]: (name: number, restField: { fieldKey?: number }) => (
     <Form.Item
       {...restField}
       initialValue={false}
@@ -40,7 +40,10 @@ export const DoubleInput = {
       />
     </Form.Item>
   ),
-  [OPERATORS.BETWEEN]: (name: number, restField: { fieldKey?: number }) => (
+  [OPERATORS.BETWEEN.value]: (
+    name: number,
+    restField: { fieldKey?: number }
+  ) => (
     <Form.Item {...restField}>
       <Row gutter={8}>
         <Col span={12}>
@@ -75,7 +78,7 @@ export const DoubleInput = {
       </Row>
     </Form.Item>
   ),
-  [OPERATORS.EXIST]: (name: number, restField: { fieldKey?: number }) => (
+  [OPERATORS.EXIST.value]: (name: number, restField: { fieldKey?: number }) => (
     <Form.Item
       {...restField}
       initialValue={false}
@@ -102,7 +105,10 @@ export const LongInput = {
       />
     </Form.Item>
   ),
-  [OPERATORS.BETWEEN]: (name: number, restField: { fieldKey?: number }) => (
+  [OPERATORS.BETWEEN.value]: (
+    name: number,
+    restField: { fieldKey?: number }
+  ) => (
     <Form.Item {...restField}>
       <Row gutter={8}>
         <Col span={12}>
@@ -136,7 +142,7 @@ export const LongInput = {
       </Row>
     </Form.Item>
   ),
-  [OPERATORS.EXIST]: (name: number, restField: { fieldKey?: number }) => (
+  [OPERATORS.EXIST.value]: (name: number, restField: { fieldKey?: number }) => (
     <Form.Item
       {...restField}
       initialValue={false}
@@ -171,7 +177,10 @@ export const TimestampInput = {
       <DatePicker showTime style={{ width: '100%' }} />
     </Form.Item>
   ),
-  [OPERATORS.BETWEEN]: (name: number, restField: { fieldKey?: number }) => (
+  [OPERATORS.BETWEEN.value]: (
+    name: number,
+    restField: { fieldKey?: number }
+  ) => (
     <Form.Item
       {...restField}
       name={[name, 'values']}
@@ -180,7 +189,7 @@ export const TimestampInput = {
       <RangePicker showTime style={{ width: '100%' }} />
     </Form.Item>
   ),
-  [OPERATORS.RELATIVE_TIME]: (
+  [OPERATORS.RELATIVE_TIME.value]: (
     name: number,
     restField: { fieldKey?: number }
   ) => (
@@ -236,7 +245,7 @@ export const TimestampInput = {
       </Row>
     </Form.Item>
   ),
-  [OPERATORS.EXIST]: (name: number, restField: { fieldKey?: number }) => (
+  [OPERATORS.EXIST.value]: (name: number, restField: { fieldKey?: number }) => (
     <Form.Item
       {...restField}
       initialValue={false}

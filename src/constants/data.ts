@@ -7,19 +7,19 @@ export const TYPES = {
 }
 
 export const OPERATORS = {
-  EQUALS: 'equals',
-  NOT_EQUALS: 'notEquals',
-  LIKES: 'likes',
-  NOT_LIKES: 'notLikes',
-  CONTAIN_ALL: 'containAll',
-  EXIST: 'exist',
-  WILDCARD: 'wildcard',
-  GT: 'gt',
-  GTE: 'gte',
-  LT: 'lt',
-  LTE: 'lte',
-  BETWEEN: 'between',
-  RELATIVE_TIME: 'relativeTime'
+  EQUALS: { value: 'equals', label: 'Equals' },
+  NOT_EQUALS: { value: 'notEquals', label: 'Not Equals' },
+  LIKES: { value: 'likes', label: 'Likes' },
+  NOT_LIKES: { value: 'notLikes', label: 'Not Likes' },
+  CONTAIN_ALL: { value: 'containAll', label: 'Contains All' },
+  EXIST: { value: 'exist', label: 'Exist' },
+  WILDCARD: { value: 'wildcard', label: 'Wildcard' },
+  GT: { value: 'gt', label: 'Greater than' },
+  GTE: { value: 'gte', label: 'Greater than Equal' },
+  LT: { value: 'lt', label: 'Less than' },
+  LTE: { value: 'lte', label: 'Less than Equal' },
+  BETWEEN: { value: 'between', label: 'Between' },
+  RELATIVE_TIME: { value: 'relativeTime', label: 'Relative Time' }
 }
 
 export const dataModel = [
@@ -764,46 +764,49 @@ export const dataModel = [
 
 export const operators: Record<string, { value: string; label: string }[]> = {
   [TYPES.STRING]: [
-    { value: OPERATORS.EQUALS, label: 'Equals' },
-    { value: OPERATORS.NOT_EQUALS, label: 'Not Equals' },
-    { value: OPERATORS.LIKES, label: 'Likes' },
-    { value: OPERATORS.NOT_LIKES, label: 'Not Likes' },
-    { value: OPERATORS.CONTAIN_ALL, label: 'Contains All' },
-    { value: OPERATORS.EXIST, label: 'Exist' },
-    { value: OPERATORS.WILDCARD, label: 'Wildcard' }
+    { value: OPERATORS.EQUALS.value, label: OPERATORS.EQUALS.label },
+    { value: OPERATORS.NOT_EQUALS.value, label: OPERATORS.NOT_EQUALS.label },
+    { value: OPERATORS.LIKES.value, label: OPERATORS.LIKES.label },
+    { value: OPERATORS.NOT_LIKES.value, label: OPERATORS.NOT_LIKES.label },
+    { value: OPERATORS.CONTAIN_ALL.value, label: OPERATORS.CONTAIN_ALL.label },
+    { value: OPERATORS.EXIST.value, label: OPERATORS.EXIST.label },
+    { value: OPERATORS.WILDCARD.value, label: OPERATORS.WILDCARD.label }
   ],
   [TYPES.DOUBLE]: [
-    { value: OPERATORS.NOT_EQUALS, label: 'Not Equals' },
-    { value: OPERATORS.EQUALS, label: 'Equals' },
-    { value: OPERATORS.GT, label: 'Greater than' },
-    { value: OPERATORS.GTE, label: 'Greater than Equal' },
-    { value: OPERATORS.LT, label: 'Less than' },
-    { value: OPERATORS.LTE, label: 'Less than Equal' },
-    { value: OPERATORS.BETWEEN, label: 'Between' },
-    { value: OPERATORS.EXIST, label: 'Exist' }
+    { value: OPERATORS.NOT_EQUALS.value, label: OPERATORS.NOT_EQUALS.label },
+    { value: OPERATORS.EQUALS.value, label: OPERATORS.EQUALS.label },
+    { value: OPERATORS.GT.value, label: OPERATORS.GT.label },
+    { value: OPERATORS.GTE.value, label: OPERATORS.GTE.label },
+    { value: OPERATORS.LT.value, label: OPERATORS.LT.label },
+    { value: OPERATORS.LTE.value, label: OPERATORS.LTE.label },
+    { value: OPERATORS.BETWEEN.value, label: OPERATORS.BETWEEN.label },
+    { value: OPERATORS.EXIST.value, label: OPERATORS.EXIST.label }
   ],
   [TYPES.LONG]: [
-    { value: OPERATORS.NOT_EQUALS, label: 'Not Equals' },
-    { value: OPERATORS.EQUALS, label: 'Equals' },
-    { value: OPERATORS.GT, label: 'Greater than' },
-    { value: OPERATORS.GTE, label: 'Greater than Equal' },
-    { value: OPERATORS.LT, label: 'Less than' },
-    { value: OPERATORS.LTE, label: 'Less than Equal' },
-    { value: OPERATORS.BETWEEN, label: 'Between' },
-    { value: OPERATORS.EXIST, label: 'Exist' }
+    { value: OPERATORS.NOT_EQUALS.value, label: OPERATORS.NOT_EQUALS.label },
+    { value: OPERATORS.EQUALS.value, label: OPERATORS.EQUALS.label },
+    { value: OPERATORS.GT.value, label: OPERATORS.GT.label },
+    { value: OPERATORS.GTE.value, label: OPERATORS.GTE.label },
+    { value: OPERATORS.LT.value, label: OPERATORS.LT.label },
+    { value: OPERATORS.LTE.value, label: OPERATORS.LTE.label },
+    { value: OPERATORS.BETWEEN.value, label: OPERATORS.BETWEEN.label },
+    { value: OPERATORS.EXIST.value, label: OPERATORS.EXIST.label }
   ],
   [TYPES.BOOLEAN]: [
-    { value: OPERATORS.EQUALS, label: 'Equals' },
-    { value: OPERATORS.NOT_EQUALS, label: 'Not Equals' },
-    { value: OPERATORS.EXIST, label: 'Exist' }
+    { value: OPERATORS.EQUALS.value, label: OPERATORS.EQUALS.label },
+    { value: OPERATORS.NOT_EQUALS.value, label: OPERATORS.NOT_EQUALS.label },
+    { value: OPERATORS.EXIST.value, label: OPERATORS.EXIST.label }
   ],
   [TYPES.TIMESTAMP]: [
-    { value: OPERATORS.EQUALS, label: 'Equals' },
-    { value: OPERATORS.NOT_EQUALS, label: 'Not Equals' },
-    { value: OPERATORS.BETWEEN, label: 'Between' },
-    { value: OPERATORS.GTE, label: 'Greater than Equal' },
-    { value: OPERATORS.LTE, label: 'Less than Equal' },
-    { value: OPERATORS.RELATIVE_TIME, label: 'Relative Time' },
-    { value: OPERATORS.EXIST, label: 'Exist' }
+    { value: OPERATORS.EQUALS.value, label: OPERATORS.EQUALS.label },
+    { value: OPERATORS.NOT_EQUALS.value, label: OPERATORS.NOT_EQUALS.label },
+    { value: OPERATORS.BETWEEN.value, label: OPERATORS.BETWEEN.label },
+    { value: OPERATORS.GTE.value, label: OPERATORS.GTE.label },
+    { value: OPERATORS.LTE.value, label: OPERATORS.LTE.label },
+    {
+      value: OPERATORS.RELATIVE_TIME.value,
+      label: OPERATORS.RELATIVE_TIME.label
+    },
+    { value: OPERATORS.EXIST.value, label: OPERATORS.EXIST.label }
   ]
 }

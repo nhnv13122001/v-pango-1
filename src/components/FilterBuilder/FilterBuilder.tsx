@@ -51,15 +51,16 @@ const FilterBuilder = ({ open, onClose }: Props) => {
   const [attributes, setAttributes] = useState<AttributeType[] | null>(null)
   const [hasFilters, setHasFilters] = useState<boolean>(false)
   const fieldValues = Form.useWatch('filters', form) || []
-
   useEffect(() => {
     if (item) {
       setAttributes(item.attributes)
-
       const savedFilters = filters[item.id] || []
       if (savedFilters.length > 0) {
         form.setFieldsValue({ filters: mapResponseToForm(savedFilters) })
         setHasFilters(true)
+      } else {
+        form.resetFields()
+        setHasFilters(false)
       }
     }
   }, [item, filters, form])

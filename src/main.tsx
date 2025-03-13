@@ -7,10 +7,18 @@ import './index.css'
 import App from './App.tsx'
 import { AppProvider } from './contexts/app.context.tsx'
 
+const theme = {
+  components: {
+    Form: {
+      itemMarginBottom: 0
+    }
+  }
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AppProvider>
-      <ConfigProvider>
+      <ConfigProvider theme={theme}>
         <App />
       </ConfigProvider>
     </AppProvider>

@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from 'react'
-import { Col, Row, Form, Flex, Button, Drawer, Select } from 'antd'
+import { Fragment, useContext, useEffect, useState } from 'react'
+import { Col, Row, Form, Flex, Button, Drawer, Select, Divider } from 'antd'
 import { CloseOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { RenderInput } from './InputRenderers'
@@ -67,6 +67,11 @@ const FilterBuilder = ({ open, onClose }: Props) => {
   const handleClose = () => {
     onClose()
     form.resetFields()
+    const savedFilters = filters[item.id] || []
+    if (savedFilters.length > 0) {
+      form.setFieldsValue({ filters: mapResponseToForm(savedFilters) })
+      return
+    }
     setHasFilters(false)
   }
 
@@ -106,9 +111,16 @@ const FilterBuilder = ({ open, onClose }: Props) => {
         <Flex align='center' justify='end' gap={8}>
           <Button
             onClick={() => {
-              form.resetFields()
-              setHasFilters(false)
               onClose()
+              form.resetFields()
+              const savedFilters = filters[item.id] || []
+              if (savedFilters.length > 0) {
+                form.setFieldsValue({
+                  filters: mapResponseToForm(savedFilters)
+                })
+                return
+              }
+              setHasFilters(false)
             }}
           >
             Cancel
@@ -153,108 +165,143 @@ const FilterBuilder = ({ open, onClose }: Props) => {
                   : []
 
                 const isLastRow = index === fields.length - 1
+                const isFirstRow = index !== 0
 
                 return (
-                  <Row key={key} gutter={8} align='middle'>
-                    <Col span={9}>
-                      <Form.Item
-                        {...restField}
-                        name={[name, 'attribute']}
-                        rules={[{ required: true, message: '' }]}
+                  <Fragment key={key}>
+                    {isFirstRow && (
+                      <div
+                        style={{
+                          position: 'relative',
+                          marginLeft: '2.5rem',
+                          marginBlock: '0.3rem'
+                        }}
                       >
-                        <Select
-                          allowClear
-                          showSearch
-                          placeholder='Select'
-                          onChange={() => {
-                            form.setFieldsValue({
-                              filters: {
-                                [name]: {
-                                  operator: undefined,
-                                  values: undefined
-                                }
-                              }
-                            })
+                        <Divider
+                          type='vertical'
+                          dashed
+                          style={{ borderColor: '#1677ff', height: '3rem' }}
+                        />
+                        <article
+                          style={{
+                            position: 'absolute',
+                            background: '#1677ff',
+                            color: '#ffffff',
+                            borderRadius: 5,
+                            padding: '0.2rem 0.5rem',
+                            left: '-14px',
+                            top: '50%',
+                            transform: 'translateY(-50%)'
                           }}
-                          style={{ width: '100%' }}
                         >
-                          {attributes &&
-                            attributes?.map((attribute) => (
+                          AND
+                        </article>
+                      </div>
+                    )}
+                    <Row gutter={8} align='middle'>
+                      <Col span={9}>
+                        <Form.Item
+                          {...restField}
+                          name={[name, 'attribute']}
+                          rules={[{ required: true, message: '' }]}
+                        >
+                          <Select
+                            allowClear
+                            showSearch
+                            placeholder='Select'
+                            onChange={() => {
+                              form.setFieldsValue({
+                                filters: {
+                                  [name]: {
+                                    operator: undefined,
+                                    values: undefined
+                                  }
+                                }
+                              })
+                            }}
+                            style={{ width: '100%' }}
+                          >
+                            {attributes &&
+                              attributes?.map((attribute) => (
+                                <Option
+                                  key={attribute.key}
+                                  value={objectToString(attribute)}
+                                >
+                                  {`${attribute.name} - ${attribute.dataType}`}
+                                </Option>
+                              ))}
+                          </Select>
+                        </Form.Item>
+                      </Col>
+
+                      <Col span={4}>
+                        <Form.Item
+                          {...restField}
+                          name={[name, 'operator']}
+                          rules={[{ required: true, message: '' }]}
+                        >
+                          <Select
+                            allowClear
+                            placeholder='Select'
+                            onChange={() => {
+                              form.setFieldsValue({
+                                filters: {
+                                  [name]: {
+                                    values: undefined
+                                  }
+                                }
+                              })
+                            }}
+                            style={{ width: '100%' }}
+                          >
+                            {operators.map((operator) => (
                               <Option
-                                key={attribute.key}
-                                value={objectToString(attribute)}
+                                key={operator.value}
+                                value={operator.value}
                               >
-                                {`${attribute.name} - ${attribute.dataType}`}
+                                {operator.label}
                               </Option>
                             ))}
-                        </Select>
-                      </Form.Item>
-                    </Col>
+                          </Select>
+                        </Form.Item>
+                      </Col>
 
-                    <Col span={4}>
-                      <Form.Item
-                        {...restField}
-                        name={[name, 'operator']}
-                        rules={[{ required: true, message: '' }]}
-                      >
-                        <Select
-                          allowClear
-                          placeholder='Select'
-                          onChange={() => {
-                            form.setFieldsValue({
-                              filters: {
-                                [name]: {
-                                  values: undefined
-                                }
-                              }
-                            })
-                          }}
-                          style={{ width: '100%' }}
-                        >
-                          {operators.map((operator) => (
-                            <Option key={operator.value} value={operator.value}>
-                              {operator.label}
-                            </Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
-                    </Col>
+                      <Col span={9}>
+                        {renderInput(
+                          selectedAttributeType,
+                          selectedOperator,
+                          name,
+                          restField
+                        )}
+                      </Col>
 
-                    <Col span={9}>
-                      {renderInput(
-                        selectedAttributeType,
-                        selectedOperator,
-                        name,
-                        restField
-                      )}
-                    </Col>
-
-                    <Col span={1}>
-                      <Form.Item>
-                        <Button
-                          type='text'
-                          icon={<DeleteOutlined />}
-                          onClick={() => {
-                            remove(name)
-                            if (fields.length === 1) {
-                              setHasFilters(false)
-                            }
-                          }}
-                        />
-                      </Form.Item>
-                    </Col>
-                    <Col span={1}>
-                      <Form.Item>
-                        {isLastRow && (
+                      <Col span={1}>
+                        <Form.Item>
                           <Button
                             type='text'
-                            icon={<PlusOutlined />}
-                            onClick={() => handleAddRow(add)}
+                            icon={<DeleteOutlined />}
+                            onClick={() => {
+                              remove(name)
+                              if (fields.length === 1) {
+                                setHasFilters(false)
+                              }
+                            }}
                           />
-                        )}
-                      </Form.Item>
-                    </Col>
-                  </Row>
+                        </Form.Item>
+                      </Col>
+                      <Col span={1}>
+                        <Form.Item>
+                          {isLastRow && (
+                            <Button
+                              type='text'
+                              icon={<PlusOutlined />}
+                              onClick={() => handleAddRow(add)}
+                            />
+                          )}
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  </Fragment>
                 )
               })}
 
@@ -274,7 +321,11 @@ const FilterBuilder = ({ open, onClose }: Props) => {
           )}
         </Form.List>
         {hasFilters && (
-          <Button type='primary' htmlType='submit'>
+          <Button
+            type='primary'
+            htmlType='submit'
+            style={{ marginTop: '12px', marginBottom: '24px' }}
+          >
             Estimate data size
           </Button>
         )}

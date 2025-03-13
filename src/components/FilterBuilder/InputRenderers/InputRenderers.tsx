@@ -32,7 +32,12 @@ export const DoubleInput = {
       name={[name, 'values']}
       rules={[{ required: true, message: '' }]}
     >
-      <InputNumber style={{ width: '100%' }} />
+      <InputNumber
+        min={0}
+        max={10000000}
+        placeholder='Enter'
+        style={{ width: '100%' }}
+      />
     </Form.Item>
   ),
   [OPERATORS.BETWEEN]: (name: number, restField: { fieldKey?: number }) => (
@@ -44,7 +49,12 @@ export const DoubleInput = {
             name={[name, 'values', 'doubleValue1']}
             rules={[{ required: true, message: '' }]}
           >
-            <InputNumber placeholder='Min' style={{ width: '100%' }} />
+            <InputNumber
+              min={0}
+              max={10000000}
+              placeholder='Min'
+              style={{ width: '100%' }}
+            />
           </Form.Item>
         </Col>
         <Col span={12}>
@@ -53,7 +63,13 @@ export const DoubleInput = {
             name={[name, 'values', 'doubleValue2']}
             rules={[{ required: true, message: '' }]}
           >
-            <InputNumber keyboard placeholder='Max' style={{ width: '100%' }} />
+            <InputNumber
+              min={0}
+              max={10000000}
+              keyboard
+              placeholder='Max'
+              style={{ width: '100%' }}
+            />
           </Form.Item>
         </Col>
       </Row>
@@ -78,7 +94,12 @@ export const LongInput = {
       name={[name, 'values']}
       rules={[{ required: true, message: '' }]}
     >
-      <InputNumber style={{ width: '100%' }} />
+      <InputNumber
+        min={0}
+        max={10000000}
+        placeholder='Enter'
+        style={{ width: '100%' }}
+      />
     </Form.Item>
   ),
   [OPERATORS.BETWEEN]: (name: number, restField: { fieldKey?: number }) => (
@@ -90,7 +111,12 @@ export const LongInput = {
             name={[name, 'values', 'longValue1']}
             rules={[{ required: true, message: '' }]}
           >
-            <InputNumber placeholder='Min' style={{ width: '100%' }} />
+            <InputNumber
+              min={0}
+              max={10000000}
+              placeholder='Min'
+              style={{ width: '100%' }}
+            />
           </Form.Item>
         </Col>
         <Col span={12}>
@@ -99,7 +125,12 @@ export const LongInput = {
             name={[name, 'values', 'longValue2']}
             rules={[{ required: true, message: '' }]}
           >
-            <InputNumber placeholder='Max' style={{ width: '100%' }} />
+            <InputNumber
+              min={0}
+              max={10000000}
+              placeholder='Max'
+              style={{ width: '100%' }}
+            />
           </Form.Item>
         </Col>
       </Row>
@@ -161,7 +192,12 @@ export const TimestampInput = {
             name={[name, 'values', 'longValue1']}
             rules={[{ required: true, message: '' }]}
           >
-            <InputNumber placeholder='Value' style={{ width: '100%' }} />
+            <InputNumber
+              min={0}
+              max={10000000}
+              placeholder='Enter'
+              style={{ width: '100%' }}
+            />
           </Form.Item>
         </Col>
         <Col span={8}>
@@ -170,7 +206,12 @@ export const TimestampInput = {
             name={[name, 'values', 'longValue2']}
             rules={[{ required: true, message: '' }]}
           >
-            <InputNumber placeholder='Max' style={{ width: '100%' }} />
+            <InputNumber
+              min={0}
+              max={10000000}
+              placeholder='Enter'
+              style={{ width: '100%' }}
+            />
           </Form.Item>
         </Col>
         <Col span={8}>
@@ -178,6 +219,7 @@ export const TimestampInput = {
             style={{ marginBottom: 0 }}
             name={[name, 'values', 'timeType']}
             rules={[{ required: true, message: '' }]}
+            initialValue={'Day'}
           >
             <Select
               options={[

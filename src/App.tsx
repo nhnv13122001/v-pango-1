@@ -1,56 +1,29 @@
 import { useContext, useState } from 'react'
-import { CloseOutlined, PlusOutlined } from '@ant-design/icons'
-import { Drawer, Flex, Form, Select, Button } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
+import { Flex, Form, Select, Button } from 'antd'
 
 import { dataModel } from './constants/data'
 import FilterBuilder from './components/FilterBuilder'
 import { objectToString, stringToObject } from './utils/utils'
-import { AppContext, DataModelType } from './contexts/app.context'
+import { AppContext } from './contexts/app.context'
 
 const { Option } = Select
 
 function App() {
   const [form] = Form.useForm()
-  const { setItem } = useContext(AppContext)
-  const [open1, setOpen1] = useState<boolean>(false)
-  const [open2, setOpen2] = useState<boolean>(false)
-  const [selectedModel, setSelectedModel] = useState<DataModelType | null>(null)
+  const { item, setItem } = useContext(AppContext)
+  const [open, setOpen] = useState<boolean>(false)
 
-  const handleShowDrawer1 = () => {
-    setOpen1(true)
+  const handleShowDrawer = () => {
+    setOpen(true)
   }
-  const handleCloseDrawer1 = () => {
-    setOpen1(false)
-    setSelectedModel(null)
-    form.resetFields()
-  }
-  const handleShowDrawer2 = () => {
-    setOpen2(true)
-  }
-  const handleCloseDrawer2 = () => {
-    setOpen2(false)
+  const handleCloseDrawer = () => {
+    setOpen(false)
   }
 
   return (
     <Flex justify='center' align='center' style={{ height: '100vh' }}>
-      <Button type='primary' onClick={handleShowDrawer1}>
-        Open
-      </Button>
-      <Drawer
-        size='large'
-        closable={false}
-        open={open1}
-        title={
-          <Flex align='center' justify='space-between'>
-            Drawer 1
-            <Button
-              type='text'
-              icon={<CloseOutlined />}
-              onClick={handleCloseDrawer1}
-            />
-          </Flex>
-        }
-      >
+      <Flex vertical style={{ width: '50%' }}>
         <Form form={form} layout='vertical'>
           <Form.Item
             name='data-model'
@@ -59,8 +32,9 @@ function App() {
           >
             <Select
               allowClear
+              placeholder='Select'
               onChange={(value) =>
-                setSelectedModel(value ? stringToObject(value) : null)
+                setItem(value ? stringToObject(value) : null)
               }
             >
               {dataModel.map((item) => (
@@ -73,18 +47,17 @@ function App() {
         </Form>
         <Button
           type='dashed'
+          disabled={!item}
           icon={<PlusOutlined />}
-          disabled={!selectedModel}
-          style={{ width: '100%', paddingBlock: '50px' }}
+          style={{ paddingBlock: '50px', marginTop: '24px' }}
           onClick={() => {
-            handleShowDrawer2()
-            setItem(selectedModel)
+            handleShowDrawer()
           }}
         >
           Add Filter
         </Button>
-        <FilterBuilder open={open2} onClose={handleCloseDrawer2} />
-      </Drawer>
+      </Flex>
+      <FilterBuilder open={open} onClose={handleCloseDrawer} />
     </Flex>
   )
 }

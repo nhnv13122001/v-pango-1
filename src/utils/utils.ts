@@ -147,8 +147,8 @@ export const mapResponseToForm = (
           ]
         } else if (condition.operator === OPERATORS.RELATIVE_TIME) {
           formCondition.values = {
-            longValue1: numberToDayjs(condition.longValue1),
-            longValue2: numberToDayjs(condition.longValue2),
+            longValue1: condition.longValue1,
+            longValue2: condition.longValue2,
             timeType: condition.timeType
           }
         } else if (condition.operator === OPERATORS.EXIST) {

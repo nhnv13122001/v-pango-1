@@ -35,5 +35,5 @@ export interface FormFilterType {
     | boolean
     | Dayjs
     | Dayjs[]
-    | Record<string, number | string | Dayjs>
+    | Record<string, number | string>
 }

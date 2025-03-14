@@ -101,13 +101,15 @@ function App() {
                 // height: '100px',
                 overflowY: 'auto'
               }}
+              align='center'
             >
               {mapResponseToForm(filters[item.id])?.map(
                 (filter: FormFilterType, index: number) => {
                   return (
-                    <Tag key={index} color='blue'>
-                      {handleTag(filter)}
-                    </Tag>
+                    <div key={index}>
+                      {index > 0 && <Text style={{ marginRight: 8 }}>AND</Text>}
+                      <Tag color='blue'>{handleTag(filter)}</Tag>
+                    </div>
                   )
                 }
               )}

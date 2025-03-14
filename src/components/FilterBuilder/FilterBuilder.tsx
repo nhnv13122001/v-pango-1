@@ -133,6 +133,7 @@ const FilterBuilder = ({ open, onClose }: Props) => {
                 const values = await form.validateFields()
                 const moreFilters = mapFormToResponse(values.filters || [])
                 if (!item) return
+                console.log(objectToString({ moreFilters, page: 1 }))
                 setFilters(item.id, moreFilters)
               } catch (error) {
                 console.error('Validation failed (Save filters):', error)
